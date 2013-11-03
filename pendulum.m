@@ -65,7 +65,7 @@ for method = 1:1:2
             trajectory_result(time_id,:) = [t, x(1)];
 
             %figure(1)
-            %plotPendulum(x(1)+pi,l);    
+            %plot_pendulum(x(1)+pi,l);    
             %pause(time_step/RUN_SPEED);
         end
         toc

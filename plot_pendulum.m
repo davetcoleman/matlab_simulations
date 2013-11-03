@@ -1,4 +1,4 @@
-function plotPendulum(theta, length)
+function plot_pendulum(theta, length)
 
 % start pendulum horizontal
 

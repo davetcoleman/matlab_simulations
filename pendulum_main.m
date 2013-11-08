@@ -4,6 +4,9 @@ clf
 
 figure(1)
 figure(2)
+figure(3)
+
+%% load model of system and experimental data
 
 % load equations from mupad and save to file
 notebook_handle = mupad('my_pendulum_notebook.mn');
@@ -13,13 +16,46 @@ matlabFunction(notebook_function,'file','pendulum_equation.m',...
 
 % read our pendulum's actual data
 experimental = analyze_experimental();
-pause(1)
+%pause(1)
 
-% kinematic properties - moved to MuPad but saved here for ref.
-%g = 9.8; % gravity
-%m = 266.2; % mass, grams
-%l = 0.315; % radius, meters
-%k = 1.0; % coefficient of friction
+%% plot the vector field diagram of the pendulum
+
+% start state based on experiment
+start_position = experimental(1,2) % pi/2
+start_time = 0.21;
+time_step = 0.1;
+
+% state variables
+% x1 = position = theta  - radians
+% x2 = velocity = theta_dot   - radians/s
+t=0;
+
+figure(3)
+
+x1_min = -10;
+x1_max = 10;
+x2_min = -10;
+x2_max = 10;
+axis([x1_min, x1_max, x2_min, x2_max])
+
+for x1 = x1_min:1:x1_max
+    for x2 = x2_min:1:x2_max
+        x = [x1, x2];
+        % approximate the new state variables
+        x_new = 1.*my_euler(t,x,time_step,@pendulum_model);
+
+        arrow(x,x_new,'Length',8)
+        hold all
+    end
+end
+
+xlabel('x_1')
+ylabel('x_2')
+title('Vector Field Representation')
+
+return 
+
+%% integrate the model with different timesteps and methods
 
 % time
 RUN_TIME = 60; % sec

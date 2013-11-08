@@ -3,8 +3,9 @@ clear
 clf
 
 figure(1)
-figure(2)
-figure(3)
+%figure(2)
+%figure(3)
+hold off
 
 %% load model of system and experimental data
 
@@ -20,46 +21,49 @@ experimental = analyze_experimental();
 
 %% plot the vector field diagram of the pendulum
 
-% start state based on experiment
-start_position = experimental(1,2) % pi/2
-start_time = 0.21;
-time_step = 0.1;
+if 0
+    % start state based on experiment
+    start_position = experimental(1,2) % pi/2
+    start_time = 0.21;
+    time_step = 0.025;
 
-% state variables
-% x1 = position = theta  - radians
-% x2 = velocity = theta_dot   - radians/s
-t=0;
+    % state variables
+    % x1 = position = theta  - radians
+    % x2 = velocity = theta_dot   - radians/s
+    t=0;
 
-figure(3)
+    figure(3)
 
-x1_min = -10;
-x1_max = 10;
-x2_min = -10;
-x2_max = 10;
-axis([x1_min, x1_max, x2_min, x2_max])
+    x1_min = -5;
+    x1_max = 5;
+    x2_min = -5;
+    x2_max = 5;
+    axis([x1_min, x1_max, x2_min, x2_max])
 
-for x1 = x1_min:1:x1_max
-    for x2 = x2_min:1:x2_max
-        x = [x1, x2];
-        % approximate the new state variables
-        x_new = 1.*my_euler(t,x,time_step,@pendulum_model);
 
-        arrow(x,x_new,'Length',8)
-        hold all
+    for x1 = x1_min:0.5:x1_max
+        for x2 = x2_min:0.5:x2_max
+            x = [x1, x2];
+            % approximate the new state variables
+            x_new = 1.*my_euler(t,x,time_step,@pendulum_model);
+
+            arrow(x,x_new,'Length',8)
+            hold all
+        end
     end
+
+    xlabel('x_1')
+    ylabel('x_2')
+    title('Vector Field Representation')
+
+    return 
 end
-
-xlabel('x_1')
-ylabel('x_2')
-title('Vector Field Representation')
-
-return 
 
 %% integrate the model with different timesteps and methods
 
 % time
-RUN_TIME = 60; % sec
-RUN_SPEED = 1.5; % percent realtime, 1=100%
+RUN_TIME = 20; % sec
+RUN_SPEED = 2; % percent realtime, 1=100%
 
 for method = 3:1:3
     
@@ -92,7 +96,7 @@ for method = 3:1:3
         trajectory_result = zeros(RUN_TIME/time_step,2);
 
         % start state based on experiment
-        start_position = experimental(1,2); % pi/2
+        start_position = 0; %experimental(1,2);
         start_time = 0.21;
         
         % state variables
@@ -113,9 +117,15 @@ for method = 3:1:3
             % record the trajectory for later analysis
             trajectory_result(time_id,:) = [t, x(1)];
 
-            %figure(1)
-            %plot_pendulum(x(1)+pi,l);    
-            %pause(time_step/RUN_SPEED);
+            if 1
+                length = .295;
+                figure(1)
+                plot_pendulum(x(1)+pi,length);    
+                pause(time_step/RUN_SPEED);
+                if mod(i,10) == 0
+                    t
+                end
+            end
         end
         elapsed_time = toc
         
@@ -131,11 +141,14 @@ for method = 3:1:3
     end
 end
 
-% plot the experimental data for RUN_TIME amount of time
-cutoff = experimental(:,1) < RUN_TIME;
-plot(experimental(cutoff,1),experimental(cutoff,2),...
-    'DisplayName',sprintf('Experimental'))
-
 xlabel('Time')
 ylabel('Theta')
 title('Simulating Pendulum With Various Integraters')
+
+%% plot the experimental data for RUN_TIME amount of time
+
+if 0
+    cutoff = experimental(:,1) < RUN_TIME;
+    plot(experimental(cutoff,1),experimental(cutoff,2),...
+        'DisplayName',sprintf('Experimental'))
+end

@@ -4,6 +4,9 @@ function x_new = pendulum_model(t,x)
 x1_dot = x(2);
 
 % change in theta velocity = theta acceleration
-x2_dot = pendulum_equation(t,x(1),x(2)); 
+x2_dot = pendulum_equation2(t,x(1),x(2),x(3)); 
 
-x_new = [x1_dot, x2_dot];
+% integral of position
+x3_dot = pendulum_equation3(t,x(1));
+
+x_new = [x1_dot, x2_dot, x3_dot];

@@ -1,23 +1,27 @@
 clc
 clear
-clf
+%clf
 
 figure(1)
-%figure(2)
+figure(2)
 %figure(3)
-hold off
+%hold off
 
 %% load model of system and experimental data
 
 % load equations from mupad and save to file
 notebook_handle = mupad('my_pendulum_notebook.mn');
-notebook_function = getVar(notebook_handle,'x2_dot');
-matlabFunction(notebook_function,'file','pendulum_equation.m',...
-    'vars',{'t','x1','x2'});
+% x2_dot
+notebook_function2 = getVar(notebook_handle,'x2_dot');
+matlabFunction(notebook_function2,'file','pendulum_equation2.m',...
+    'vars',{'t','x1','x2','x3'});
+% x3_dot
+notebook_function3 = getVar(notebook_handle,'x3_dot');
+matlabFunction(notebook_function3,'file','pendulum_equation3.m',...
+    'vars',{'t','x1'});
 
 % read our pendulum's actual data
 experimental = analyze_experimental();
-%pause(1)
 
 %% plot the vector field diagram of the pendulum
 
@@ -103,7 +107,8 @@ for method = 3:1:3
         t = start_time; % time in sec
         % x1 = position = theta  - radians
         % x2 = velocity = theta_dot   - radians/s
-        x = [start_position, 0]; 
+        % x3 = integral of x1
+        x = [start_position, 0, 0]; 
 
         tic
         for time_id = 1:1:RUN_TIME/time_step
@@ -117,7 +122,7 @@ for method = 3:1:3
             % record the trajectory for later analysis
             trajectory_result(time_id,:) = [t, x(1)];
 
-            if 1
+            if 0
                 length = .295;
                 figure(1)
                 plot_pendulum(x(1)+pi,length);    

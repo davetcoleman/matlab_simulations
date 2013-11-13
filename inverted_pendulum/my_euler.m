@@ -12,7 +12,8 @@ y = zeros(rows,4); % a column vector
 y(1,:) = y0';
 
 for time_id = 2:1:rows
-    y(time_id,:) = y(time_id-1,:) + time_step*ode(t(time_id),y(time_id-1,:))';
+    new = ode( t(time_id-1), y(time_id-1,:) )';
+    y(time_id,:) = y(time_id-1,:) + time_step*new;
 end
 
 varargout{1} = t;

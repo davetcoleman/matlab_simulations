@@ -73,9 +73,9 @@ end
 
 % time
 RUN_TIME = 5; % sec
-RUN_SPEED = 2; % percent realtime, 1=100%
+RUN_SPEED = 1; % percent realtime, 1=100%
 
-for method = 1:1:1
+for method = 3:1:3
     
     % choose method type
     if method == 1
@@ -129,10 +129,10 @@ for method = 1:1:1
     elapsed_time = toc
 
     figure(2)
-    plot(t(:,1),y(:,3),...
-        'DisplayName',sprintf('%s, %f',integration_name, 0))
+    plot(t,y);
+         %t(:,1),y(:,1),'DisplayName',sprintf('x'))
 
-    if 0
+    if 1
         legend('-DynamicLegend')
         hold all;
     end
@@ -140,6 +140,7 @@ end
 
 xlabel('Time')
 ylabel('Theta')
+legend('x','x\_dot','theta','theta\_dot');
 title('Simulating Pendulum With Various Integraters')
 
 %% plot the experimental data for RUN_TIME amount of time

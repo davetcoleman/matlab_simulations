@@ -1,0 +1,1 @@
+rosbag record /cameras/right_hand_camera/image -O swing2

@@ -20,32 +20,15 @@ notebook_handle = mupad('my_pendulum_notebook.mn');
 % x2_dot
 notebook_function2 = getVar(notebook_handle,'x2_dot');
 matlabFunction(notebook_function2,'file','pendulum_equation2.m',...
-    'vars',{'t','x1','x2','x3','x4','x5','u'});
+    'vars',{'t','x1','x2','x3','x4','x5'});
 % x4_dot
 notebook_function4 = getVar(notebook_handle,'x4_dot');
 matlabFunction(notebook_function4,'file','pendulum_equation4.m',...
-    'vars',{'t','x1','x2','x3','x4','x5','u'});
+    'vars',{'t','x1','x2','x3','x4','x5'});
 % x5_dot
 notebook_function5 = getVar(notebook_handle,'x5_dot');
 matlabFunction(notebook_function5,'file','pendulum_equation5.m',...
-    'vars',{'t','x1','x2','x3','x4','x5','u'});
-% 
-notebook_functionA = getVar(notebook_handle,'Asolved');
-matlabFunction(notebook_functionA,'file','pendulum_equation_A.m');
-%
-notebook_functionB = getVar(notebook_handle,'Bsolved');
-matlabFunction(notebook_functionB,'file','pendulum_equation_B.m');
-
-
-
-y1_weight = 0.001;
-y2_weight = 10;
-y3_weight = 100;
-y4_weight = 1;
-Q = diag([y1_weight, y2_weight, y3_weight, y4_weight])
-
-return
-
+    'vars',{'t','x1','x2','x3','x4','x5'});
 
 % read our pendulum's actual data
 %experimental = analyze_experimental();
@@ -93,7 +76,7 @@ end
 %% integrate the model with different timesteps and methods
 
 % time
-RUN_TIME = 500; % sec
+RUN_TIME = 50; % sec
 RUN_SPEED = 20; % percent realtime, 1=100%
 
 method = 3
@@ -145,17 +128,15 @@ figure(2)
 
 %u = min(10000*y(:,3)+100*y(:,4)+10*y(:,5),500)
 K_P = 8000;
-K_Px = 20;
-u1 = -K_P*y(:,3);
-u2 = -K_Px*y(:,2);
-u = 0.01*min(u1+u2,500);
+K_Px = 100;
+u = 0.01*min(-K_P*y(:,3)-K_Px*y(:,2),500);
 
-plot(t,y(:,[2,3]),t,0.01*[0.01*u1,u2])
+plot(t,y(:,[2,3]),t,u)
 legend('-DynamicLegend')
 xlabel('Time')
 ylabel('Theta')
 %legend('x','x\_dot','theta','theta\_dot','x\_integrator');
-legend('x\_dot','theta','u1','u2');
+legend('x\_dot','theta','command');
 title('Simulating Pendulum With Various Integraters')
 
 %% animate pendulum

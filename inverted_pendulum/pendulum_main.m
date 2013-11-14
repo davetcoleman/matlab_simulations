@@ -36,17 +36,21 @@ matlabFunction(notebook_functionA,'file','pendulum_equation_A.m');
 notebook_functionB = getVar(notebook_handle,'Bsolved');
 matlabFunction(notebook_functionB,'file','pendulum_equation_B.m');
 
+A = pendulum_equation_A;
+B = pendulum_equation_B;
 
-
-y1_weight = 0.001;
-y2_weight = 10;
-y3_weight = 100;
+y1_weight = 100000;
+y2_weight = 1;
+y3_weight = 10;
 y4_weight = 1;
-Q = diag([y1_weight, y2_weight, y3_weight, y4_weight])
+Q = diag([y1_weight, y2_weight, y3_weight, y4_weight]);
 
-return
+global G
+[X,L,G] = care(A,B,Q)
+G = G*10;
 
-
+pendulum_model2 = @(t,y) pendulum_model(t,y);
+ 
 % read our pendulum's actual data
 %experimental = analyze_experimental();
 
@@ -76,7 +80,7 @@ if 0
         for x2 = x2_min:0.5:x2_max
             x = [x1, x2];
             % approximate the new state variables
-            x_new = 1.*my_euler(t,x,time_step,@pendulum_model);
+            x_new = 1.*my_euler(t,x,time_step,pendulum_model2);
 
             arrow(x,x_new,'Length',8)
             hold all
@@ -93,10 +97,10 @@ end
 %% integrate the model with different timesteps and methods
 
 % time
-RUN_TIME = 500; % sec
+RUN_TIME = 50; % sec
 RUN_SPEED = 20; % percent realtime, 1=100%
 
-method = 3
+method = 3;
 
 % choose method type
 if method == 1
@@ -150,20 +154,22 @@ u1 = -K_P*y(:,3);
 u2 = -K_Px*y(:,2);
 u = 0.01*min(u1+u2,500);
 
-plot(t,y(:,[2,3]),t,0.01*[0.01*u1,u2])
+plot(t,y) %(:,[2,3]),t,0.01*[0.01*u1,u2])
 legend('-DynamicLegend')
 xlabel('Time')
 ylabel('Theta')
-%legend('x','x\_dot','theta','theta\_dot','x\_integrator');
-legend('x\_dot','theta','u1','u2');
+legend('x','x\_dot','theta','theta\_dot','x\_integrator');
+%legend('x\_dot','theta','u1','u2');
 title('Simulating Pendulum With Various Integraters')
 
 %% animate pendulum
-if 0
+if 1
     figure(1)
     [rows, columns]=size(t);
-    for step_id=1:1:rows
-        plot_pendulum(y(step_id,3),y(step_id,1),length);    
+    for step_id=1:20:rows
+        % todo make time steps even
+        % http://www.mathworks.com/matlabcentral/newsreader/view_thread/312019
+        plot_pendulum(y(step_id,3),y(step_id,1),length,t(step_id));    
         pause(t(step_id)/RUN_SPEED);
     end
 end
